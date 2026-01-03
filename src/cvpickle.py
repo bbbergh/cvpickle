@@ -64,7 +64,7 @@ def _context_factory(cls, mapping):
 
     for (modulename, qualname), value in mapping.items():
         module = importlib.import_module(modulename)
-        cv = _getattribute(module, qualname)
+        cv = _getattribute(module, qualname.split("."))
         context.run(cv.set, value)
     return context
 
@@ -140,7 +140,7 @@ class ContextReducer:
         if validate:
             if not is_module:
                 module = importlib.import_module(modulename)
-            v = _getattribute(module, qualname)  # raises AttributeError
+            v = _getattribute(module, qualname.split("."))  # raises AttributeError
             if v is not contextvar:
                 raise ValueError('Not the same object: ContextVar {} and global {}.{}'.format(contextvar.name, modulename, qualname))
         self.picklable_contextvars[contextvar] = (modulename, qualname)
